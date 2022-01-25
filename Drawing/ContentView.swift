@@ -21,10 +21,18 @@ struct Triangle: Shape {
     }
 }
 
-struct Arc: Shape {
+struct Arc: InsettableShape {
     var startAngle: Angle
     var endAngle: Angle
     var clockwise: Bool
+    
+    var insetAmount = 0.0
+
+    func inset(by amount: CGFloat) -> some InsettableShape {
+        var arc = self
+        arc.insetAmount += amount
+        return arc
+    }
     
     func path (in rect: CGRect) -> Path {
         let rotationAdjustment = Angle.degrees(90)
@@ -41,12 +49,15 @@ struct Arc: Shape {
 struct ContentView: View {
     var body: some View {
         
+//        Circle()
+//            .stroke(.brown, lineWidth: 50)
+            
 //        Triangle()
 //            .stroke(.cyan, style: StrokeStyle(lineWidth: 15, lineCap: .round, lineJoin: .round))
 //            .frame(width: 300, height: 300)
         
         Arc(startAngle: .degrees(0), endAngle: .degrees(110), clockwise: true)
-            .stroke(.cyan, style: StrokeStyle(lineWidth: 15, lineCap: .round, lineJoin: .round))
+            .strokeBorder(.cyan, style: StrokeStyle(lineWidth: 15, lineCap: .round, lineJoin: .round))
             .frame(width: 300, height: 300)
 //
 //        Path { path in
