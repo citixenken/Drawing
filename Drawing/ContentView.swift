@@ -115,23 +115,65 @@ import SwiftUI
 //    }
 //}
 
-struct Trapezoid: Shape {
-    var insetAmount: Double
+//struct Trapezoid: Shape {
+//    var insetAmount: Double
+//
+//    var animatableData: Double {
+//        get { insetAmount } //read
+//        set { insetAmount = newValue } //write
+//    }
+//
+//    func path(in rect: CGRect) -> Path {
+//        var path = Path()
+//
+//        path.move(to: CGPoint(x: 0, y: rect.maxY))
+//        path.addLine(to: CGPoint(x: insetAmount, y: rect.minY))
+//        path.addLine(to: CGPoint(x: rect.maxX - insetAmount, y: rect.minY))
+//        path.addLine(to: CGPoint(x: rect.maxX, y: rect.maxY))
+//        path.addLine(to: CGPoint(x: 0, y: rect.maxY))
+//
+//        return path
+//    }
+//}
+
+struct Checkerboard: Shape {
+    var rows: Int
+    var columns: Int
     
-    var animatableData: Double {
-        get { insetAmount }
-        set { insetAmount = newValue }
+    //make checkerboard animate changes in the number of rows and columns
+    var animatableData: AnimatablePair<Double, Double> {
+        get {
+            //Int -> Double
+            AnimatablePair(Double(rows), Double(columns))
+        }
+        
+        set {
+            //Double -> Int
+            rows = Int(newValue.first)
+            columns = Int(newValue.second)
+        }
     }
     
     func path(in rect: CGRect) -> Path {
         var path = Path()
         
-        path.move(to: CGPoint(x: 0, y: rect.maxY))
-        path.addLine(to: CGPoint(x: insetAmount, y: rect.minY))
-        path.addLine(to: CGPoint(x: rect.maxX - insetAmount, y: rect.minY))
-        path.addLine(to: CGPoint(x: rect.maxX, y: rect.maxY))
-        path.addLine(to: CGPoint(x: 0, y: rect.maxY))
+        // figure out how big each row/column needs to be
+        let rowSize = rect.height / Double(rows)
+        let columnSize = rect.width / Double(columns)
         
+        //loop over all rows and columns, making alternating squares colored
+        for row in 0..<rows {
+            for column in 0..<columns {
+                if (row + column).isMultiple(of: 2) {
+                    //this square should be colored; add a rectangle here
+                    let startX = columnSize * Double(column)
+                    let startY = rowSize * Double(row)
+                    
+                    let rect = CGRect(x: startX, y: startY, width: columnSize, height: rowSize)
+                    path.addRect(rect)
+                }
+            }
+        }
         return path
     }
 }
@@ -143,16 +185,28 @@ struct ContentView: View {
     //    @State private var colorCycle = 0.0
     
     //    @State private var amount = 0.0
-    @State private var insetAmount = 60.0
+    //    @State private var insetAmount = 60.0
+    @State private var rows = 4
+    @State private var columns = 4
     
     var body: some View {
-        Trapezoid(insetAmount: insetAmount)
-            .frame(width: 300, height: 150)
+        
+        Checkerboard(rows: rows, columns: columns)
+            .frame(width: 400, height: 400)
             .onTapGesture {
-                withAnimation {
-                    insetAmount = Double.random(in: 10...200)
+                withAnimation(.linear(duration: 10)) {
+                    rows = 16
+                    columns = 16
                 }
             }
+        
+        //        Trapezoid(insetAmount: insetAmount)
+        //            .frame(width: 300, height: 150)
+        //            .onTapGesture {
+        //                withAnimation {
+        //                    insetAmount = Double.random(in: 10...200)
+        //                }
+        //            }
         
         //        VStack {
         //            Image("high")
