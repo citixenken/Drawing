@@ -46,80 +46,123 @@ import SwiftUI
 //    }
 //}
 
-struct Flower: Shape {
-    //How much to move this petal away from the center
-    var petalOffset: Double = -20
+//struct Flower: Shape {
+//    //How much to move this petal away from the center
+//    var petalOffset: Double = -20
+//
+//    //How wide to make each petal
+//    var petalWidth: Double = 100
+//
+//    func path(in rect: CGRect) -> Path {
+//        //The path that will hold all petals
+//        var path = Path()
+//
+//        //Count from 0 upto pi * 2, moving up pi / 8 each time
+//        for number in stride(from: 0, to: Double.pi * 2, by: Double.pi / 8) {
+//            //rotate the petal by the current value of our loop
+//            let rotation = CGAffineTransform(rotationAngle: number)
+//
+//            //move the petal to the center of our view
+//            let position = rotation.concatenating(CGAffineTransform(translationX: rect.width / 2, y: rect.height / 2))
+//
+//            //create a path for this petal using our properties plus a fixed Y and height
+//            let originalPetal = Path(ellipseIn: CGRect(x: petalOffset, y: 0, width: petalWidth, height: rect.width / 2))
+//
+//            //apply our rotation/position transfromation to the petal
+//            let rotatedPetal = originalPetal.applying(position)
+//
+//            //add it to our main path
+//            path.addPath(rotatedPetal)
+//        }
+//        //send the main path back
+//        return path
+//    }
+//}
+
+struct  ColorCyclingCircle: View {
+    var amount = 0.0
+    var steps = 100
     
-    //How wide to make each petal
-    var petalWidth: Double = 100
-    
-    func path(in rect: CGRect) -> Path {
-        //The path that will hold all petals
-        var path = Path()
-        
-        //Count from 0 upto pi * 2, moving up pi / 8 each time
-        for number in stride(from: 0, to: Double.pi * 2, by: Double.pi / 8) {
-            //rotate the petal by the current value of our loop
-            let rotation = CGAffineTransform(rotationAngle: number)
-            
-            //move the petal to the center of our view
-            let position = rotation.concatenating(CGAffineTransform(translationX: rect.width / 2, y: rect.height / 2))
-            
-            //create a path for this petal using our properties plus a fixed Y and height
-            let originalPetal = Path(ellipseIn: CGRect(x: petalOffset, y: 0, width: petalWidth, height: rect.width / 2))
-            
-            //apply our rotation/position transfromation to the petal
-            let rotatedPetal = originalPetal.applying(position)
-            
-            //add it to our main path
-            path.addPath(rotatedPetal)
+    var body: some View {
+        ZStack {
+            ForEach(0..<steps) { value in
+                Circle()
+                    .inset(by: Double(value))
+                    //.strokeBorder(color(for: value, brightness: 1), lineWidth: 2)
+                    .strokeBorder(
+                        LinearGradient(
+                        gradient: Gradient(colors: [
+                        color(for: value, brightness: 1),
+                        color(for: value, brightness: 0.3)
+                        ]),
+                        startPoint: .top,
+                        endPoint: .bottom
+                        ),
+                        lineWidth: 2
+                    )
+            }
         }
-        //send the main path back
-        return path
+        .drawingGroup() //solves rendering and performance problems
+    }
+    func color(for value: Int, brightness: Double) -> Color {
+        var targetHue = Double(value) / Double(steps) + amount
+        
+        if targetHue > 1 {
+            targetHue -= 1
+        }
+        
+        return Color(hue: targetHue, saturation: 1, brightness: brightness)
     }
 }
 
 struct ContentView: View {
     
-    @State private var petalOffset = -20.0
-    @State private var petalWidth = 100.0
+    //    @State private var petalOffset = -20.0
+    //    @State private var petalWidth = 100.0
+    @State private var colorCycle = 0.0
     
     var body: some View {
-        
-        
         VStack {
-            Flower(petalOffset: petalOffset, petalWidth: petalWidth)
-                //.stroke(.cyan, lineWidth: 2)
-                .fill(.mint, style: FillStyle(eoFill: true))
-            
-            Text("Offset: \(petalOffset)")
-            Slider(value: $petalOffset, in: -100...100)
-                .padding([.horizontal, .bottom])
-            
-            Text("Width: \(petalWidth)")
-            Slider(value: $petalWidth, in: 0...200)
-                .padding([.horizontal, .bottom])
+            ColorCyclingCircle(amount: colorCycle)
+                .frame(width: 300, height: 300)
+            Text("Color Cycle: \(colorCycle)")
+            Slider(value: $colorCycle)
+                .padding(.horizontal)
         }
-//        Circle()
-//            .stroke(.brown, lineWidth: 50)
-            
-//        Triangle()
-//            .stroke(.cyan, style: StrokeStyle(lineWidth: 15, lineCap: .round, lineJoin: .round))
-//            .frame(width: 300, height: 300)
         
-//        Arc(startAngle: .degrees(0), endAngle: .degrees(110), clockwise: true)
-//            .strokeBorder(.cyan, style: StrokeStyle(lineWidth: 15, lineCap: .round, lineJoin: .round))
-//            .frame(width: 300, height: 300)
-//
-//        Path { path in
-//            path.move(to: CGPoint(x: 200, y: 100))
-//            path.addLine(to: CGPoint(x: 100, y: 300))
-//            path.addLine(to: CGPoint(x: 300, y: 300))
-//            path.addLine(to: CGPoint(x: 200, y: 100))
-//            //path.closeSubpath()
-//
-//        }
-//        .stroke(.cyan, style: StrokeStyle(lineWidth: 10, lineCap: .round, lineJoin: .round))
+        //        VStack {
+        //            Flower(petalOffset: petalOffset, petalWidth: petalWidth)
+        //                //.stroke(.cyan, lineWidth: 2)
+        //                .fill(.mint, style: FillStyle(eoFill: true))
+        //
+        //            Text("Offset: \(petalOffset)")
+        //            Slider(value: $petalOffset, in: -100...100)
+        //                .padding([.horizontal, .bottom])
+        //
+        //            Text("Width: \(petalWidth)")
+        //            Slider(value: $petalWidth, in: 0...200)
+        //                .padding([.horizontal, .bottom])
+        //        }
+        //        Circle()
+        //            .stroke(.brown, lineWidth: 50)
+        
+        //        Triangle()
+        //            .stroke(.cyan, style: StrokeStyle(lineWidth: 15, lineCap: .round, lineJoin: .round))
+        //            .frame(width: 300, height: 300)
+        
+        //        Arc(startAngle: .degrees(0), endAngle: .degrees(110), clockwise: true)
+        //            .strokeBorder(.cyan, style: StrokeStyle(lineWidth: 15, lineCap: .round, lineJoin: .round))
+        //            .frame(width: 300, height: 300)
+        //
+        //        Path { path in
+        //            path.move(to: CGPoint(x: 200, y: 100))
+        //            path.addLine(to: CGPoint(x: 100, y: 300))
+        //            path.addLine(to: CGPoint(x: 300, y: 300))
+        //            path.addLine(to: CGPoint(x: 200, y: 100))
+        //            //path.closeSubpath()
+        //
+        //        }
+        //        .stroke(.cyan, style: StrokeStyle(lineWidth: 10, lineCap: .round, lineJoin: .round))
     }
 }
 
