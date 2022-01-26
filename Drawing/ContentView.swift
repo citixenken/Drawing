@@ -125,50 +125,50 @@ struct ContentView: View {
     
     var body: some View {
         
-        VStack {
-            Image("high")
-                .resizable()
-                .ignoresSafeArea()
-                .colorMultiply(.red)
-                //.scaledToFit()
-                //.frame(width: 200, height: 200)
-                .saturation(amount)
-                .blur(radius: (1 - amount) * 10)
-            
-            Slider(value: $amount)
-                .padding()
-        }
-        
 //        VStack {
-//            ZStack {
-//                Circle()
-//                    //.fill(.red) //SwiftUI adaptive color
-//                    .fill(Color(red: 0, green: 0, blue: 1)) //custom color
-//                    .frame(width: 200 * amount)
-//                    .offset(x: -50, y: -80)
-//                    .blendMode(.screen)
-//
-//                Circle()
-//                    //.fill(.green) //SwiftUI adaptive color
-//                    .fill(Color(red: 0, green: 1, blue: 0)) //custom color
-//                    .frame(width: 200 * amount)
-//                    .offset(x: -50, y: -80)
-//                    .blendMode(.screen)
-//
-//                Circle()
-//                    //.fill(.blue) //SwiftUI adaptive color
-//                    .fill(Color(red: 1, green: 0, blue: 0)) //custom color
-//                    .frame(width: 200 * amount)
-//                    .blendMode(.screen)
-//            }
-//            .frame(width: 300, height: 300)
+//            Image("high")
+//                .resizable()
+//                .ignoresSafeArea()
+//                .colorMultiply(.red)
+//                //.scaledToFit()
+//                //.frame(width: 200, height: 200)
+//                .saturation(amount)
+//                .blur(radius: (1 - amount) * 10)
 //
 //            Slider(value: $amount)
 //                .padding()
 //        }
-//        .frame(maxWidth: .infinity, maxHeight: .infinity)
-//        .background(.black)
-//        .ignoresSafeArea()
+        
+        VStack {
+            ZStack {
+                Circle()
+                    //.fill(.red) //SwiftUI adaptive color
+                    .fill(Color(red: 0, green: 0, blue: 1)) //custom color
+                    .frame(width: 200 * amount)
+                    .offset(x: -50, y: -80)
+                    .blendMode(.screen)
+
+                Circle()
+                    //.fill(.green) //SwiftUI adaptive color
+                    .fill(Color(red: 0, green: 1, blue: 0)) //custom color
+                    .frame(width: 200 * amount)
+                    .offset(x: 50, y: -80)
+                    .blendMode(.screen)
+
+                Circle()
+                    //.fill(.blue) //SwiftUI adaptive color
+                    .fill(Color(red: 1, green: 0, blue: 0)) //custom color
+                    .frame(width: 200 * amount)
+                    .blendMode(.screen)
+            }
+            .frame(width: 300, height: 300)
+
+            Slider(value: $amount)
+                .padding()
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(.black)
+        .ignoresSafeArea()
         
 //        Image("high")
 //            .resizable()
