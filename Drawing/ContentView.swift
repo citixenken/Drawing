@@ -68,7 +68,7 @@ import SwiftUI
 //            //create a path for this petal using our properties plus a fixed Y and height
 //            let originalPetal = Path(ellipseIn: CGRect(x: petalOffset, y: 0, width: petalWidth, height: rect.width / 2))
 //
-//            //apply our rotation/position transfromation to the petal
+//            //apply our rotation/position transformation to the petal
 //            let rotatedPetal = originalPetal.applying(position)
 //
 //            //add it to our main path
@@ -115,84 +115,113 @@ import SwiftUI
 //    }
 //}
 
+struct Trapezoid: Shape {
+    var insetAmount: Double
+    
+    var animatableData: Double {
+        get { insetAmount }
+        set { insetAmount = newValue }
+    }
+    
+    func path(in rect: CGRect) -> Path {
+        var path = Path()
+        
+        path.move(to: CGPoint(x: 0, y: rect.maxY))
+        path.addLine(to: CGPoint(x: insetAmount, y: rect.minY))
+        path.addLine(to: CGPoint(x: rect.maxX - insetAmount, y: rect.minY))
+        path.addLine(to: CGPoint(x: rect.maxX, y: rect.maxY))
+        path.addLine(to: CGPoint(x: 0, y: rect.maxY))
+        
+        return path
+    }
+}
+
 struct ContentView: View {
     
     //    @State private var petalOffset = -20.0
     //    @State private var petalWidth = 100.0
-//    @State private var colorCycle = 0.0
+    //    @State private var colorCycle = 0.0
     
-    @State private var amount = 0.0
+    //    @State private var amount = 0.0
+    @State private var insetAmount = 60.0
     
     var body: some View {
-        
-//        VStack {
-//            Image("high")
-//                .resizable()
-//                .ignoresSafeArea()
-//                .colorMultiply(.red)
-//                //.scaledToFit()
-//                //.frame(width: 200, height: 200)
-//                .saturation(amount)
-//                .blur(radius: (1 - amount) * 10)
-//
-//            Slider(value: $amount)
-//                .padding()
-//        }
-        
-        VStack {
-            ZStack {
-                Circle()
-                    //.fill(.red) //SwiftUI adaptive color
-                    .fill(Color(red: 0, green: 0, blue: 1)) //custom color
-                    .frame(width: 200 * amount)
-                    .offset(x: -50, y: -80)
-                    .blendMode(.screen)
-
-                Circle()
-                    //.fill(.green) //SwiftUI adaptive color
-                    .fill(Color(red: 0, green: 1, blue: 0)) //custom color
-                    .frame(width: 200 * amount)
-                    .offset(x: 50, y: -80)
-                    .blendMode(.screen)
-
-                Circle()
-                    //.fill(.blue) //SwiftUI adaptive color
-                    .fill(Color(red: 1, green: 0, blue: 0)) //custom color
-                    .frame(width: 200 * amount)
-                    .blendMode(.screen)
+        Trapezoid(insetAmount: insetAmount)
+            .frame(width: 300, height: 150)
+            .onTapGesture {
+                withAnimation {
+                    insetAmount = Double.random(in: 10...200)
+                }
             }
-            .frame(width: 300, height: 300)
-
-            Slider(value: $amount)
-                .padding()
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(.black)
-        .ignoresSafeArea()
         
-//        Image("high")
-//            .resizable()
-//            .ignoresSafeArea()
-//            .colorMultiply(.red)
+        //        VStack {
+        //            Image("high")
+        //                .resizable()
+        //                .ignoresSafeArea()
+        //                .colorMultiply(.red)
+        //                //.scaledToFit()
+        //                //.frame(width: 200, height: 200)
+        //                .saturation(amount)
+        //                .blur(radius: (1 - amount) * 10)
+        //
+        //            Slider(value: $amount)
+        //                .padding()
+        //        }
         
-//        ZStack {
-//            Image("high")
-//
-//            Rectangle()
-//                .fill(.red)
-//                .blendMode(.multiply)
-//        }
-//        .frame(width: 400, height: 500)
-//        .clipped()
+        //        VStack {
+        //            ZStack {
+        //                Circle()
+        //                //.fill(.red) //SwiftUI adaptive color
+        //                    .fill(Color(red: 0, green: 0, blue: 1)) //custom color
+        //                    .frame(width: 200 * amount)
+        //                    .offset(x: -50, y: -80)
+        //                    .blendMode(.screen)
+        //
+        //                Circle()
+        //                //.fill(.green) //SwiftUI adaptive color
+        //                    .fill(Color(red: 0, green: 1, blue: 0)) //custom color
+        //                    .frame(width: 200 * amount)
+        //                    .offset(x: 50, y: -80)
+        //                    .blendMode(.screen)
+        //
+        //                Circle()
+        //                //.fill(.blue) //SwiftUI adaptive color
+        //                    .fill(Color(red: 1, green: 0, blue: 0)) //custom color
+        //                    .frame(width: 200 * amount)
+        //                    .blendMode(.screen)
+        //            }
+        //            .frame(width: 300, height: 300)
+        //
+        //            Slider(value: $amount)
+        //                .padding()
+        //        }
+        //        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        //        .background(.black)
+        //        .ignoresSafeArea()
+        
+        //        Image("high")
+        //            .resizable()
+        //            .ignoresSafeArea()
+        //            .colorMultiply(.red)
+        
+        //        ZStack {
+        //            Image("high")
+        //
+        //            Rectangle()
+        //                .fill(.red)
+        //                .blendMode(.multiply)
+        //        }
+        //        .frame(width: 400, height: 500)
+        //        .clipped()
         
         
-//        VStack {
-//            ColorCyclingCircle(amount: colorCycle)
-//                .frame(width: 300, height: 300)
-//            Text("Color Cycle: \(colorCycle)")
-//            Slider(value: $colorCycle)
-//                .padding(.horizontal)
-//        }
+        //        VStack {
+        //            ColorCyclingCircle(amount: colorCycle)
+        //                .frame(width: 300, height: 300)
+        //            Text("Color Cycle: \(colorCycle)")
+        //            Slider(value: $colorCycle)
+        //                .padding(.horizontal)
+        //        }
         
         //        VStack {
         //            Flower(petalOffset: petalOffset, petalWidth: petalWidth)
